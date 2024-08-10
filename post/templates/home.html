@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %} 
+    {% for post in posts %}
+        <h2>{{ post.post_message }}</h2>
+        <h2>{{ post.create_at }}</h2>
+        <h2>{{ post.likes }}</h2>
+        <p>Author: {{ post.author_username }}</p>
+        <a href="{% url 'delete_post' post.id %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'likes_post' post.id %}" class="btn btn-secondary">Likes {{ post.likes }}</a>
+        <br>
+        <br>
+    {% endfor %}
+{% endblock %}
