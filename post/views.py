@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, PostForm
-from .models import Post, User
+from .models import Post, User, Like
 from django.db.models import F
 
 def home(request):
@@ -84,11 +84,23 @@ def delete_post(request, post_id):
     
 def likes_post(request, post_id):
     if request.user.is_authenticated: 
-        select_post = Post.objects.get(id=post_id)
-        select_post.likes += 1
-        select_post.save()
-        messages.success(request, "You Like This Post")
-        return redirect('home')
+        post = get_object_or_404(Post, id=post_id)
+        try:
+            like = Like.objects.get(user=request.user, post=post)
+            select_post = Post.objects.get(id=post_id)
+            like.delete()
+            select_post.likes -= 1
+            select_post.save()
+            messages.success(request, "You Unlike This Post")
+            return redirect('home')
+        except Like.DoesNotExist:
+            Like.objects.create(user=request.user, post=post)
+            select_post = Post.objects.get(id=post_id)
+            select_post.likes += 1
+            select_post.save()
+            messages.success(request, "You Like This Post")
+            return redirect('home')
     else:
         messages.success(request, "You Must Be Logged In To Do That")
         return redirect('home')
+    
