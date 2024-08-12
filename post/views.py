@@ -6,11 +6,11 @@ from .models import Post, User, Like
 from django.db.models import F
 
 def home(request):
-    posts = Post.objects.all()
-    posts = posts.annotate(author_username=F('author__username'))
+    latest_posts = Post.objects.order_by('-created_at')[:10]
+    latest_posts = latest_posts.annotate(author_username=F('author__username'))
 
     context = {
-        'posts': posts
+        'posts': latest_posts
     }
     return render(request, 'home.html', context)
 
