@@ -9,4 +9,5 @@ urlpatterns = [
     path('delete_post/<int:post_id>', views.delete_post, name='delete_post'),
     path('create_post/', views.create_post, name='create_post'),
     path('likes_post/<int:post_id>', views.likes_post, name='likes_post'),
+    path('api/post/', views.PostListAPIView.as_view()),
 ]

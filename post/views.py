@@ -4,6 +4,15 @@ from django.contrib import messages
 from .forms import SignUpForm, PostForm
 from .models import Post, User, Like
 from django.db.models import F
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import PostSerializer
+
+class PostListAPIView(APIView):
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
 def home(request):
     latest_posts = Post.objects.order_by('-created_at')[:10]
